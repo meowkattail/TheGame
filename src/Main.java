@@ -15,7 +15,18 @@ public class Main extends Application {
     public GameWorld gameWorld;
 
 
-
+    @Override
+    public void init() throws Exception {
+        super.init();
+        gameWorld = new GameWorld();
+        physicsThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runPhysicsThread();
+            }
+        });
+        physicsThread.setDaemon(true);
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -35,6 +46,7 @@ public class Main extends Application {
             gameWorld.drawMyself(gc);
         }
     }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -45,7 +57,8 @@ public class Main extends Application {
         Scene primaryScene = new Scene(intro, windowWideth, windowHeight);
         primaryStage.setScene(primaryScene);
         primaryStage.show();
-        physicsThread.start();
         gc = canvas.getGraphicsContext2D();
+        gameWorld.init();
+        physicsThread.start();
     }
 }
