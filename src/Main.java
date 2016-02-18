@@ -1,4 +1,6 @@
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -33,6 +35,10 @@ public class Main extends Application {
     }
 
     public void runPhysicsThread() {
+
+    }
+
+    public void drawGameWorld(){
         long currentTime = System.currentTimeMillis();
         long nextTime;
         while (true) {
@@ -59,6 +65,19 @@ public class Main extends Application {
         primaryStage.show();
         gc = canvas.getGraphicsContext2D();
         gameWorld.init();
+        Runnable drawRunnable = new Runnable() {
+            @Override
+            public void run() {
+                gameWorld.drawMyself(gc);
+            }
+        };
+        new AnimationTimer(){
+
+            @Override
+            public void handle(long now) {
+                Platform.runLater(drawRunnable);
+            }
+        }.start();
         physicsThread.start();
     }
 }
